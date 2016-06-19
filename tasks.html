@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="de" manifest="tasks.appcache">
+<head>
+	<meta charset="UTF-8">
+	<title>Task List</title>
+	<link rel="stylesheet" href="styles/tasks.css">
+	<script src="scripts/jquery-2.2.2.js"></script>
+	<!-- Load JsRender latest version -->
+	<!--script src="scripts/jsrender.js"></script-->
+	<!-- Load JSViews latest version -->
+	<!--script src="scripts/jsviews.js"></script-->
+	<script src="scripts/jquery-tmpl-master/jquery.tmpl.js"></script>  
+	<script src="scripts/jquery.validate.js"></script>
+	<script src="scripts/jquery-serialization.js"></script>
+	<script src="scripts/tasks-controller.js"></script>
+	<script src="scripts/date.js"></script>
+</head>
+<body>
+<header>
+	<h1>Task List</h1>
+</header>
+<main id="taskPage">
+	<section id="taskCreation" class="not">
+		<form id="taskForm">
+			<input type="hidden" name="id">
+			<div>
+				<label>Aufgabe</label>
+				<input type="text" required="required" name="task" maxlength="200" class="large" placeholder="Breakfast at Tiffanys">
+			</div>
+			<div>
+				<label>Zu erledigen bis</label>
+				<input type="date" required="required" name="requiredBy">
+			</div>
+			<div>
+				<label>Category</label>
+				<select name="category">
+					<option value="Personal">Personal</option>
+					<option value="Work">Work</option>
+				</select>
+			</div>
+			<div class="buttons">
+				<a href="#" id="saveTask">Save Task</a>
+				<a href="#" id="clearTask">Clear Task</a>
+			</div>
+		</form>
+	</section>
+	<section>
+		<table id="tblTasks">
+			<colgroup>
+				<col class="col-1">
+				<col class="col-2">
+				<col class="col-3">
+				<col class="col-4">
+			</colgroup>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Due</th>
+					<th>Category</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Return library books</td>
+					<td><time datetime="15.04.2016">15.04.2016</time>
+					<td>Personal</td>
+					<td>
+						<div class="buttons">
+							<a href="#">Edit</a>
+							<a href="#">Complete</a>
+							<a href="#" class="deleteRow">Delete</a>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>Perform project demo to steakholders</td>
+					<td><time datetime="15.04.2016">15.04.2016</time>
+					<td>Work</td>
+					<td>
+						<div class="buttons">
+							<a href="#">Edit</a>
+							<a href="#">Complete</a>
+							<a href="#" class="deleteRow">Delete</a>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>Meet friends for dinner</td>
+					<td><time datetime="15.04.2016">15.04.2016</time>
+					<td>Personal</td>
+					<td>
+						<div class="buttons">
+							<a href="#">Edit</a>
+							<a href="#">Complete</a>
+							<a href="#" class="deleteRow">Delete</a>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="buttons">
+			<a href="#" id="btnAddTask">Add Task</a>
+		</div>
+	</section>
+</main>
+<footer>
+	<p>You have <span id="taskCount">0</span> tasks</p>
+</footer>
+
+<script>
+
+	function initScreen(){
+		$(document).ready(function(){
+			tasksController.init($('#taskPage'), function (){
+				tasksController.loadTasks();
+			});
+		});					
+	}
+	
+	if (window.indexedDB){
+		$.getScript("scripts/tasks-indexeddb.js").done(function (script, textStatus){
+			initScreen();
+			console.log("IndexedDB initialized successful");
+		})
+		.fail(function (jqxhr, settings, exception){
+			console.error('Failed to load indexed db script');
+		});
+	}
+	else if (window.localStorge){
+		$.getScript("scripts/tasks-webstorage.js").done(function (){
+			initScreen();
+			console.log("WebStorage initialized successful");
+		})
+		.fail(function (jqxhr,settings,exception){
+			console.error('Failed to load web storage script');
+		})
+	}
+
+</script>
+
+<script id="taskRow" type="text/x-jQuery-tmpl">
+	
+	<tr>
+		<td{{if complete == true}} class="taskCompleted"{{/if}}>${task}</td>
+		<td{{if complete == true}} class="taskCompleted"{{/if}}><time datetime="${requiredBy}">${requiredBy}</time></td>
+		<td{{if complete == true}} class="taskCompleted"{{/if}}>${category}</td>
+		<td>
+			<div class="buttons">
+				{{if complete != true}}
+					<a href="#" class="editRow" data-task-id="${id}">Edit</a>
+					<a href="#" class="completeRow" data-task-id="${id}">Complete</a>
+				{{/if}}
+				<a href="#" class="deleteRow" data-task-id="${id}">Delete</a>
+			</div>
+		</td>
+	</tr>
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+CACHE MANIFEST
+tasks.html
+scripts/date.js
+scripts/jquery.validate.js
+scripts/jquery-2.2.2.js
+scripts/jquery-serialization.js
+scripts/jquery-tmpl-master/jquery.tmpl.js
+scripts/tasks-controller.js
+scripts/tasks-indexeddb.js
+scripts/tasks-webstorage.js
+styles/tasks.css
+
+FALLBACK:
+
+NETWORK:
+*
